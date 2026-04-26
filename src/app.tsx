@@ -5,7 +5,7 @@ import { randomUUID } from 'uncrypto';
 import {
     EconomyConfig, GameConfig,
     DEFAULT_ECONOMY_CONFIG, DEFAULT_GAME_CONFIG,
-    Casino, Player, Game, Card, GameState
+    Casino, Player, Game, GameState
 } from '@golden-jack/engine';
 
 import { Header } from './components/header/Header';
