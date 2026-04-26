@@ -2,22 +2,19 @@ import React from 'react';
 import { Box, render, Text, useInput } from 'ink';
 import { randomUUID } from 'uncrypto';
 
-import { darkTheme } from './utils/theme';
-
-import { Bet } from './components/Bet';
-import { Balance } from './components/Balance';
-import { Sep } from './components/Separator';
-import { Key } from './components/Key';
-import { Score } from './components/Score';
-
-import { canDecrease } from './composables/canDecrease';
-import { canIncrease } from './composables/canIncrease';
-
 import {
     EconomyConfig, GameConfig,
     DEFAULT_ECONOMY_CONFIG, DEFAULT_GAME_CONFIG,
-    Casino, Player, Game, Card, Type, GameState
+    Casino, Player, Game, Card, GameState
 } from '@golden-jack/engine';
+
+import { Header } from './components/header/Header';
+import { Sep } from './components/Separator';
+import { Footer } from './components/footer/Footer';
+import { HandItem } from './components/HandItem';
+
+import { canDecrease } from './composables/canDecrease';
+import { canIncrease } from './composables/canIncrease';
 
 const economyConfig: EconomyConfig = DEFAULT_ECONOMY_CONFIG;
     economyConfig.minBet = 50;
@@ -39,10 +36,10 @@ const App = () => {
     useInput((input, key) => {
         if (key.escape) process.exit(1);
 
-        if (!betConfirmed) { // Betting
+        if (!betConfirmed) { // Bet
             if (key.rightArrow && canIncrease(bet, player.balance, economyConfig.maxBet)) setBet(prev => prev + economyConfig.minBet);
             if (key.leftArrow && canDecrease(bet, economyConfig.minBet)) setBet(prev => prev - economyConfig.minBet);
-            if (key.return && bet >= Math.min(economyConfig.minBet, player.balance) && player.balance >= 0) {
+            if (key.return && bet >= Math.min(economyConfig.minBet, player.balance) && bet > 0) {
                 lastRound.bet(player.id, bet);
                 setBetConfirmed(true);
             }
@@ -59,7 +56,7 @@ const App = () => {
             }
         }
 
-        if (lastRound.state === GameState.END) { // New Round
+        if (lastRound.state === GameState.END) { // End of Round
             if (input === ' ') {
                 game.startRound();
                 setLastRound(game.rounds[game.rounds.length - 1]);
@@ -72,87 +69,21 @@ const App = () => {
     return (
 
 <Box paddingX={2} paddingY={1} flexDirection='column' gap={1}>  
-    <Box display='flex' flexDirection='row' justifyContent='space-between' width='100%'>
-        <Text bold color={darkTheme.GOLD}>Golden Jack</Text>
-        <Bet amount={bet} isConfirmed={betConfirmed} min={Math.min(economyConfig.minBet, player.balance)} max={economyConfig.maxBet} playerBalance={player.balance} />
-        <Balance balance={player.balance} />
-    </Box>
+    <Header bet={bet} playerBalance={player.balance} min={economyConfig.minBet} max={economyConfig.maxBet} isBetConfirmed={betConfirmed} />
+
     <Sep />
+    
     <Box display='flex' flexDirection='column' height={10} alignItems='center' justifyContent='center'>
         {!betConfirmed && <Text>SELECT YOUR BET ABOVE</Text>}
         {betConfirmed && <Box display='flex' flexDirection='row' alignItems='center' justifyContent='space-around' width='100%'>
-            <Box display='flex' flexDirection='column' gap={1} alignItems='center' justifyContent='center'>
-                <Text bold>DEALER</Text>
-                <Box display='flex' flexDirection='row' justifyContent='center'>
-                    {lastRound.dealerHand.cards.map((card: Card, index: number) => {
-                        const hidden: boolean = lastRound.state === GameState.PLAYER && index === 1;
-
-                        const color: darkTheme = hidden
-                            ? darkTheme.GOLD
-                            : card.type === Type.HEART || card.type === Type.DIAMOND
-                                ? darkTheme.RED
-                                : darkTheme.TEXT;
-
-                        const text: string = hidden
-                            ? '??'
-                            : isNaN(parseInt(card.rank))
-                                ? card.rank + card.rank
-                                : card.rank.padStart(2, '0');
-                        
-                        const symbol: string = hidden ? '?' : card.symbol;
-
-                        return (
-                            <Box key={card.id} borderStyle='round' borderColor={color} display='flex' flexDirection='column' width={8}>
-                                <Box display='flex' justifyContent='flex-start'>
-                                    <Text bold color={color}>{symbol}</Text>
-                                </Box>
-                                <Box display='flex' justifyContent='center'>
-                                    <Text bold color={darkTheme.TEXT}>{text}</Text>
-                                </Box>
-                                <Box display='flex' justifyContent='flex-end'>
-                                    <Text bold color={color}>{symbol}</Text>
-                                </Box>
-                            </Box>
-                        )
-                    })}
-                </Box>
-                <Score value={lastRound.state === GameState.PLAYER ? '?' : lastRound.dealerHand.score} />
-            </Box>
-            <Box display='flex' flexDirection='column' gap={1} alignItems='center' justifyContent='center'>
-                <Text bold>{player.username.toUpperCase()}</Text>
-                <Box display='flex' flexDirection='row' justifyContent='center'>
-                    {lastRound.findHand(player.id)!.cards.map((card: Card) => {
-                        const color = card.type === Type.HEART || card.type === Type.DIAMOND ? darkTheme.RED : darkTheme.TEXT;
-                        const text = isNaN(parseInt(card.rank)) ? card.rank + card.rank : card.rank.padStart(2, '0');
-                        return (
-                            <Box key={card.id} borderStyle='round' borderColor={color} display='flex' flexDirection='column' width={8}>
-                                <Box display='flex' justifyContent='flex-start'>
-                                    <Text bold color={color}>{card.symbol}</Text>
-                                </Box>
-                                <Box display='flex' justifyContent='center'>
-                                    <Text bold color={darkTheme.TEXT}>{text}</Text>
-                                </Box>
-                                <Box display='flex' justifyContent='flex-end'>
-                                    <Text bold color={color}>{card.symbol}</Text>
-                                </Box>
-                            </Box>
-                        )
-                    })}
-                </Box>
-                <Score value={lastRound.findHand(player.id)!.score} />
-            </Box>
+            <HandItem lastRound={lastRound} isDealer />
+            <HandItem lastRound={lastRound} player={player} />
         </Box>}
     </Box>
+
     <Sep />
-    <Box display='flex' flexDirection='row' justifyContent='space-around'>
-        <Key keyCap='escape' color={darkTheme.GRAY} does='Quit' />
-        {!betConfirmed && <Key keyCap='<-' color={darkTheme.TEXT} does='Decrease' />}
-        {!betConfirmed && <Key keyCap='->' color={darkTheme.TEXT} does='Increase' />}
-        {!betConfirmed && <Key keyCap='enter' color={darkTheme.GREEN} does='Valid' />}
-        {lastRound.state === GameState.PLAYER && <Key keyCap='h' color={darkTheme.GREEN} does='Hit' />}
-        {lastRound.state === GameState.PLAYER && <Key keyCap='s' color={darkTheme.RED} does='Stand' />}
-        {lastRound.state === GameState.END && <Key keyCap='Space' color={darkTheme.BLUE} does='New Round' />}
-    </Box>
+
+    <Footer lastRound={lastRound} isBetConfirmed={betConfirmed} />
 </Box>
 
     )
