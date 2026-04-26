@@ -1,6 +1,5 @@
 import React from 'react';
 import { Text, useStdout } from 'ink';
-
 import { darkTheme } from '../utils/theme';
 
 export const Sep = () => {
