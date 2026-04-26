@@ -16,9 +16,7 @@ import { canIncrease } from './composables/canIncrease';
 import {
     EconomyConfig, GameConfig,
     DEFAULT_ECONOMY_CONFIG, DEFAULT_GAME_CONFIG,
-    Casino, Player, Game, Card,
-    Type,
-    GameState
+    Casino, Player, Game, Card, Type, GameState
 } from '@golden-jack/engine';
 
 const economyConfig: EconomyConfig = DEFAULT_ECONOMY_CONFIG;
@@ -29,12 +27,14 @@ Casino.init(economyConfig.bankroll);
 const player: Player = new Player(randomUUID(), 'player', economyConfig.initialBalance);
 const game: Game = new Game([player], gameConfig, economyConfig);
 
-game.startRound();
-
 const App = () => {
     const [betConfirmed, setBetConfirmed] = React.useState(false);
-    const [bet, setBet] = React.useState(economyConfig.minBet);
-    const [lastRound, setLastRound] = React.useState(game.rounds[game.rounds.length - 1]);
+    const [bet, setBet] = React.useState(Math.min(economyConfig.minBet, player.balance));
+    const [lastRound, setLastRound] = React.useState(() => {
+        game.startRound();
+        return game.rounds[game.rounds.length - 1];
+    })
+    const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
     useInput((input, key) => {
         if (key.escape) process.exit(1);
@@ -42,31 +42,29 @@ const App = () => {
         if (!betConfirmed) { // Betting
             if (key.rightArrow && canIncrease(bet, player.balance, economyConfig.maxBet)) setBet(prev => prev + economyConfig.minBet);
             if (key.leftArrow && canDecrease(bet, economyConfig.minBet)) setBet(prev => prev - economyConfig.minBet);
-            if (key.return && player.balance >= economyConfig.minBet) {
+            if (key.return && bet >= Math.min(economyConfig.minBet, player.balance) && player.balance >= 0) {
                 lastRound.bet(player.id, bet);
                 setBetConfirmed(true);
             }
         }
 
-        if (betConfirmed && lastRound.state === GameState.PLAYER) { // Hit or Stand
+        if (lastRound.state === GameState.PLAYER) { // Hit or Stand
             if (input.toLowerCase() === 'h') {
                 lastRound.hit(player.id);
-                setLastRound(Object.assign(Object.create(Object.getPrototypeOf(lastRound)), lastRound));
+                forceUpdate();
             }
             if (input.toLowerCase() === 's') {
                 lastRound.stand(player.id);
-                setLastRound(Object.assign(Object.create(Object.getPrototypeOf(lastRound)), lastRound));
+                forceUpdate();
             }
         }
 
-
-        if (key.return && betConfirmed && lastRound.state === GameState.END) { // New Round
-            const currentLast = game.rounds[game.rounds.length - 1];
-            if (currentLast.state === GameState.END) { 
+        if (lastRound.state === GameState.END) { // New Round
+            if (input === ' ') {
                 game.startRound();
                 setLastRound(game.rounds[game.rounds.length - 1]);
-                setBetConfirmed(false);
                 setBet(Math.min(economyConfig.minBet, player.balance));
+                setBetConfirmed(false);
             }
         }
     }, { isActive: true });
@@ -76,7 +74,7 @@ const App = () => {
 <Box paddingX={2} paddingY={1} flexDirection='column' gap={1}>  
     <Box display='flex' flexDirection='row' justifyContent='space-between' width='100%'>
         <Text bold color={darkTheme.GOLD}>Golden Jack</Text>
-        <Bet amount={bet} isConfirmed={betConfirmed} min={economyConfig.minBet} max={economyConfig.maxBet} playerBalance={player.balance} />
+        <Bet amount={bet} isConfirmed={betConfirmed} min={Math.min(economyConfig.minBet, player.balance)} max={economyConfig.maxBet} playerBalance={player.balance} />
         <Balance balance={player.balance} />
     </Box>
     <Sep />
@@ -153,7 +151,7 @@ const App = () => {
         {!betConfirmed && <Key keyCap='enter' color={darkTheme.GREEN} does='Valid' />}
         {lastRound.state === GameState.PLAYER && <Key keyCap='h' color={darkTheme.GREEN} does='Hit' />}
         {lastRound.state === GameState.PLAYER && <Key keyCap='s' color={darkTheme.RED} does='Stand' />}
-        {lastRound.state === GameState.END && <Key keyCap='enter' color={darkTheme.BLUE} does='New Round' />}
+        {lastRound.state === GameState.END && <Key keyCap='Space' color={darkTheme.BLUE} does='New Round' />}
     </Box>
 </Box>
 
