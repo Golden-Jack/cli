@@ -1,10 +1,10 @@
 import React from 'react';
 import { Box, Text } from 'ink';
-import { Card, Round, Type } from '@golden-jack/engine';
-import { darkTheme } from '../utils/theme';
-import { cardHidden } from '../composables/cardHidden';
-import { cardColor } from '../composables/cardColor';
-import { cardText } from '../composables/cardText';
+import { Card, Round } from '@golden-jack/engine';
+import { darkTheme } from '../../utils/theme';
+import { cardHidden } from '../../composables/cardHidden';
+import { cardColor } from '../../composables/cardColor';
+import { cardText } from '../../composables/cardText';
 
 interface props {
     card: Card;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Text } from 'ink';
-import { darkTheme } from '../utils/theme';
+import { darkTheme } from '../../utils/theme';
 
 interface props {
     keyCap: string;
