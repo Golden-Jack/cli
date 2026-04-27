@@ -2,7 +2,7 @@ import React from 'react';
 import { Box } from 'ink';
 import { GameState, Round } from '@golden-jack/engine';
 import { darkTheme } from '../../utils/theme';
-import { Key } from '../Key';
+import { Key } from './Key';
 
 interface props {
     lastRound: Round;

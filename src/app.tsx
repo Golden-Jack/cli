@@ -11,10 +11,11 @@ import {
 import { Header } from './components/header/Header';
 import { Sep } from './components/Separator';
 import { Footer } from './components/footer/Footer';
-import { HandItem } from './components/HandItem';
+import { HandItem } from './components/main/HandItem';
 
 import { canDecrease } from './composables/canDecrease';
 import { canIncrease } from './composables/canIncrease';
+import { OutcomeItem } from './components/main/OutcomeItem';
 
 const economyConfig: EconomyConfig = DEFAULT_ECONOMY_CONFIG;
     economyConfig.minBet = 50;
@@ -75,10 +76,13 @@ const App = () => {
     
     <Box display='flex' flexDirection='column' height={10} alignItems='center' justifyContent='center'>
         {!betConfirmed && <Text>SELECT YOUR BET ABOVE</Text>}
-        {betConfirmed && <Box display='flex' flexDirection='row' alignItems='center' justifyContent='space-around' width='100%'>
-            <HandItem lastRound={lastRound} isDealer />
-            <HandItem lastRound={lastRound} player={player} />
-        </Box>}
+        {betConfirmed && (
+            <Box display='flex' flexDirection='row' alignItems='center' justifyContent='space-around' width='100%'>
+                <HandItem lastRound={lastRound} isDealer />
+                <OutcomeItem round={lastRound} playerId={player.id} bet={bet} />
+                <HandItem lastRound={lastRound} player={player} />
+            </Box>
+        )}
     </Box>
 
     <Sep />
