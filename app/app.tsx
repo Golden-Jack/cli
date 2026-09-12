@@ -1,6 +1,8 @@
+#!/usr/bin/env node
+
 import React from 'react';
 import { Box, render, Text, useInput } from 'ink';
-import { randomUUID } from 'uncrypto';
+import { randomUUID } from 'node:crypto';
 
 import {
     EconomyConfig, GameConfig,
@@ -22,7 +24,7 @@ const economyConfig: EconomyConfig = DEFAULT_ECONOMY_CONFIG;
 const gameConfig: GameConfig = DEFAULT_GAME_CONFIG;
 
 Casino.init(economyConfig.bankroll);
-const player: Player = new Player(randomUUID(), 'player', economyConfig.initialBalance);
+const player: Player = new Player(randomUUID(), 'PLAYER', economyConfig.initialBalance);
 const game: Game = new Game([player], gameConfig, economyConfig);
 
 const App = () => {

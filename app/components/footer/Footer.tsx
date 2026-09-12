@@ -13,7 +13,7 @@ export const Footer = ({lastRound, isBetConfirmed}: props) => {
     const [keyDisplayed, setKeyDisplayed] = React.useState(false);
 
     useInput((input, key) => {
-        if (input.toLowerCase() === 'h') {
+        if (input.toLowerCase() === 'm') {
             setKeyDisplayed(!keyDisplayed);
         }
     }, { isActive: true });
@@ -21,7 +21,7 @@ export const Footer = ({lastRound, isBetConfirmed}: props) => {
     return (
 
 <Box display='flex' flexDirection='row' justifyContent='space-around' flexWrap='wrap' gap={2}>
-    {!keyDisplayed && <Key keyCap='h' color={darkTheme.TEXT} does='Shortcuts' />}
+    {!keyDisplayed && <Key keyCap='m' color={darkTheme.TEXT} does='Shortcuts' />}
     {keyDisplayed && <Key keyCap='escape' color={darkTheme.GRAY} does='Quit' />}
     {!isBetConfirmed && keyDisplayed && <Key keyCap='<-' color={darkTheme.TEXT} does='Decrease' />}
     {!isBetConfirmed && keyDisplayed && <Key keyCap='->' color={darkTheme.TEXT} does='Increase' />}
