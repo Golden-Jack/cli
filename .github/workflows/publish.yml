@@ -21,6 +21,16 @@ jobs:
               env:
                 GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
             - run: npm run build
-            - run: npm publish --access public --provenance
+
+            - name: Determine npm tag
+              id: npm_tag
+              run: |
+                VERSION=$(node -p "require('./package.json').version")
+                if [[ "$VERSION" == *-* ]]; then
+                    echo "tag=beta" >> "$GITHUB_OUTPUT"
+                else
+                    echo "tag=latest" >> "$GITHUB_OUTPUT"
+                fi
+            - run: npm publish --access public --provenance --tag ${{ steps.npm_tag.outputs.tag }}
               env:
                 NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

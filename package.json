@@ -14,9 +14,16 @@
   "author": "Li Koubra",
   "type": "module",
   "main": "app/app.tsx",
-  "bin": { "golden-jack": "./dist/main.js" },
-  "files": ["dist", "README.md"],
-  "publishConfig": { "access": "public" },
+  "bin": {
+    "golden-jack": "dist/main.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "prepublishOnly": "npm run build",
   "scripts": {
     "start": "tsx .",
