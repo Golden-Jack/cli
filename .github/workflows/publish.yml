@@ -19,7 +19,7 @@ jobs:
                 registry-url: 'https://registry.npmjs.org'
             - run: npm ci
               env:
-                GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
             - run: npm run build
             - run: npm publish --access public --provenance
               env:
