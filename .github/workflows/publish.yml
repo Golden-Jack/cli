@@ -31,6 +31,6 @@ jobs:
                 else
                     echo "tag=latest" >> "$GITHUB_OUTPUT"
                 fi
-            - run: npm publish --access public --provenance --tag ${{ steps.npm_tag.outputs.tag }}
+            - run: npm publish --access public --provenance --tag ${{ steps.npm_tag.outputs.tag }} --registry https://registry.npmjs.org
               env:
                 NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
