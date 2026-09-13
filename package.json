@@ -1,14 +1,14 @@
 {
   "name": "@golden-jack/cli",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.10",
   "description": "Golden Jack CLI",
-  "homepage": "https://github.com/golden-jack/cli#readme",
+  "homepage": "https://github.com/Golden-Jack/cli#readme",
   "bugs": {
-    "url": "https://github.com/golden-jack/cli/issues"
+    "url": "https://github.com/Golden-Jack/cli/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/golden-jack/cli.git"
+    "url": "git+https://github.com/Golden-Jack/cli.git"
   },
   "license": "MIT",
   "author": "Li Koubra",
