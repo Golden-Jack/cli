@@ -21,7 +21,6 @@ jobs:
             - run: npm ci
               env:
                 GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-
             - name: Determine npm tag
               id: npm_tag
               run: |
@@ -31,6 +30,8 @@ jobs:
                 else
                     echo "tag=latest" >> "$GITHUB_OUTPUT"
                 fi
-            - run: npm publish --access public --provenance --tag ${{ steps.npm_tag.outputs.tag }} --registry https://registry.npmjs.org
+            - name: Configure registry for publish
+              run: echo "@golden-jack:registry=https://registry.npmjs.org" > .npmrc
+            - run: npm publish --access public --provenance --tag ${{ steps.npm_tag.outputs.tag }}
               env:
                 NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
