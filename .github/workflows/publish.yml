@@ -21,7 +21,6 @@ jobs:
             - run: npm ci
               env:
                 GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-            - run: npm run build
 
             - name: Determine npm tag
               id: npm_tag
