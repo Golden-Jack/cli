@@ -1,6 +1,6 @@
 {
   "name": "@golden-jack/cli",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Golden Jack CLI",
   "homepage": "https://github.com/Golden-Jack/cli#readme",
   "bugs": {
@@ -13,7 +13,7 @@
   "license": "MIT",
   "author": "Li Koubra",
   "type": "module",
-  "main": "app/app.tsx",
+  "main": "src/main.ts",
   "bin": {
     "golden-jack": "dist/main.js"
   },
@@ -32,13 +32,14 @@
   },
   "dependencies": {
     "@golden-jack/engine": "^1.0.6",
+    "env-paths": "^4.0.0",
     "ink": "^7.1.1",
     "react": "^19.3.0"
   },
   "devDependencies": {
-    "@types/node": "^25.9.6",
-    "tsx": "^4.23.13",
-    "typescript": "7.0.2",
-    "@types/react": "^19.3.0"
+    "@types/node": "^25.9.8",
+    "@types/react": "^19.3.0",
+    "tsx": "^4.23.15",
+    "typescript": "7.0.2"
   }
 }

@@ -1,100 +1,79 @@
-#!/usr/bin/env node
-
 import React from 'react';
 import { Box, render, Text, useInput } from 'ink';
-import { randomUUID } from 'node:crypto';
 
-import {
-    EconomyConfig, GameConfig,
-    DEFAULT_ECONOMY_CONFIG, DEFAULT_GAME_CONFIG,
-    Casino, Player, Game, GameState
-} from '@golden-jack/engine';
-
-import { Header } from './components/header/Header';
 import { Sep } from './components/Separator';
-import { Footer } from './components/footer/Footer';
-import { HandItem } from './components/main/HandItem';
+import { Key } from './components/footer/Key';
 
-import { canDecrease } from './composables/canDecrease';
-import { canIncrease } from './composables/canIncrease';
-import { OutcomeItem } from './components/main/OutcomeItem';
+import { prev, next } from './utils/list';
+import { palettes } from './utils/theme';
 
-const economyConfig: EconomyConfig = DEFAULT_ECONOMY_CONFIG;
-    economyConfig.minBet = 50;
-const gameConfig: GameConfig = DEFAULT_GAME_CONFIG;
+import { Context } from '../src/context';
+import { showSaves } from './saves';
+import { showSettings } from './settings';
 
-Casino.init(economyConfig.bankroll);
-const player: Player = new Player(randomUUID(), 'PLAYER', economyConfig.initialBalance);
-const game: Game = new Game([player], gameConfig, economyConfig);
+const options: string[] = ['Play', 'Settings'];
 
-const App = () => {
-    const [betConfirmed, setBetConfirmed] = React.useState(false);
-    const [bet, setBet] = React.useState(Math.min(economyConfig.minBet, player.balance));
-    const [lastRound, setLastRound] = React.useState(() => {
-        game.startRound();
-        return game.rounds[game.rounds.length - 1];
+let instance: ReturnType<typeof render>;
+export function launchApp() {
+    instance = render(<App />);
+}
+export function unmountApp() {
+    instance?.unmount();
+}
+
+export const App = () => {
+    const [option, setOption] = React.useState(0);
+    const ctx = Context.get();
+    const theme = palettes[ctx.settings.theme];
+
+    const [height, setHeight] = React.useState(process.stdout.rows - 12);
+    process.stdout.on('resize', () => {
+        setHeight(process.stdout.rows - 12);
     })
-    const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
     useInput((input, key) => {
         if (key.escape) process.exit(1);
 
-        if (!betConfirmed) { // Bet
-            if (key.rightArrow && canIncrease(bet, player.balance, economyConfig.maxBet)) setBet(prev => prev + economyConfig.minBet);
-            if (key.leftArrow && canDecrease(bet, economyConfig.minBet)) setBet(prev => prev - economyConfig.minBet);
-            if (key.return && bet >= Math.min(economyConfig.minBet, player.balance) && bet > 0) {
-                lastRound.bet(player.id, bet);
-                setBetConfirmed(true);
-            }
-        }
+        if (key.downArrow) setOption(next(option, options));
+        if (key.upArrow) setOption(prev(option, options));
 
-        if (lastRound.state === GameState.PLAYER) { // Hit or Stand
-            if (input.toLowerCase() === 'h') {
-                lastRound.hit(player.id);
-                forceUpdate();
-            }
-            if (input.toLowerCase() === 's') {
-                lastRound.stand(player.id);
-                forceUpdate();
-            }
-        }
-
-        if (lastRound.state === GameState.END) { // End of Round
-            if (input === ' ') {
-                game.startRound();
-                setLastRound(game.rounds[game.rounds.length - 1]);
-                setBet(Math.min(economyConfig.minBet, player.balance));
-                setBetConfirmed(false);
-            }
+        if (key.return) {
+            console.clear();
+            unmountApp();
+            if (options[option] === 'Play') showSaves();
+            if (options[option] === 'Settings') showSettings();
         }
     }, { isActive: true });
 
     return (
 
-<Box paddingX={2} paddingY={1} flexDirection='column' gap={1}>  
-    <Header bet={bet} playerBalance={player.balance} min={economyConfig.minBet} max={economyConfig.maxBet} isBetConfirmed={betConfirmed} />
-
-    <Sep />
-    
-    <Box display='flex' flexDirection='column' height={10} alignItems='center' justifyContent='center'>
-        {!betConfirmed && <Text>SELECT YOUR BET ABOVE</Text>}
-        {betConfirmed && (
-            <Box display='flex' flexDirection='row' alignItems='center' justifyContent='space-around' width='100%'>
-                <HandItem lastRound={lastRound} isDealer />
-                <OutcomeItem round={lastRound} playerId={player.id} bet={bet} />
-                <HandItem lastRound={lastRound} player={player} />
-            </Box>
-        )}
+<Box display='flex' paddingX={2} paddingY={1} flexDirection='column' gap={1} alignItems='center'>
+    <Box display='flex' flexDirection='row' justifyContent='space-between' width='100%'>
+        <Text bold color={theme.GOLD}>Golden Jack</Text>
     </Box>
 
     <Sep />
 
-    <Footer lastRound={lastRound} isBetConfirmed={betConfirmed} />
+    <Box display='flex' flexDirection='column' height={height} alignItems='center' justifyContent='center' gap={1}>
+        <Box display='flex' gap={1}>
+            <Text bold color={theme.TEXT}>{options[option] === 'Play' ? '<  ' : ''}</Text>
+            <Text bold color={options[option] === 'Play' ? theme.GOLD : theme.TEXT}>Play</Text>
+            <Text bold color={theme.TEXT}>{options[option] === 'Play' ? '  >' : ''}</Text>
+        </Box>
+        <Box display='flex' gap={1}>
+            <Text bold color={theme.TEXT}>{options[option] === 'Settings' ? '<  ' : ''}</Text>
+            <Text bold color={options[option] === 'Settings' ? theme.GOLD : theme.TEXT}>Settings</Text>
+            <Text bold color={theme.TEXT}>{options[option] === 'Settings' ? '  >' : ''}</Text>
+        </Box>
+    </Box>
+
+    <Sep />
+
+    <Box display='flex' flexDirection='row' justifyContent='space-around' flexWrap='wrap' gap={2}>
+        <Key keyCap='↕' color={theme.TEXT} does='Navigate' />
+        <Key keyCap='return' color={theme.GREEN} does='Select' />
+    </Box>
 </Box>
 
     )
 }
-
-console.clear();
-
-render(<App />);

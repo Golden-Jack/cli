@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Text } from 'ink';
 import { Outcome, Round } from '@golden-jack/engine';
 import { darkTheme } from '../../utils/theme';
@@ -25,7 +24,7 @@ export const OutcomeItem = ({round, playerId, bet}: props) => {
 
 <Box display='flex' flexDirection='column' alignItems='center' gap={1}>
     <Text>{outcome}</Text>
-    <Text color={color}>{diff > 0 ? '+' : ''}{diff}G</Text>
+    <Text color={color}>{diff > 0 ? '+' : ''}{Math.round(diff)}G</Text>
  </Box>
 
         )
