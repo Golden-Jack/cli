@@ -1,6 +1,6 @@
 {
   "name": "@golden-jack/cli",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Golden Jack CLI",
   "homepage": "https://github.com/Golden-Jack/cli#readme",
   "bugs": {
@@ -27,7 +27,7 @@
   },
   "scripts": {
     "start": "tsx .",
-    "build": "esbuild app/app.tsx --bundle --platform=node --format=esm --outfile=dist/main.js --external:ink --external:react",
+    "build": "esbuild src/main.ts --bundle --platform=node --format=esm --outfile=dist/main.js --external:ink --external:react",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {

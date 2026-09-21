@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import envPaths, { Paths } from 'env-paths';
 
 import { DEFAULT_SETTINGS, Settings } from './types/Settings';
