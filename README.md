@@ -7,25 +7,11 @@ Install the package via npm :
 ```sh
 npm install -g @golden-jack/cli
 ```
-Or try it instantly without installing :
-```sh
-npx @golden-jack/cli
-```
 ### Usage
 Launch the game :
 ```sh
 npx @golden-jack/cli
 ```
-
-Controls :
-
-| Key | Action |
-|---|---|
-| ← / → | Adjust your bet |
-| Enter | Confirm your bet |
-| H | Hit |
-| S | Stand |
-| Space | Next round |
-| Escape | Quit the game |
+Controls : Press `M` to display shortcuts
 ### License
 This project is licensed under MIT License. See the [LICENSE](LICENSE) for details.

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Text } from 'ink';
 import { Card, GameState, Hand, Player, Round } from '@golden-jack/engine';
 import { CardItem } from './CardItem';

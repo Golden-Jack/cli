@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Text } from 'ink';
 import { Card, Round } from '@golden-jack/engine';
 import { darkTheme } from '../../utils/theme';
