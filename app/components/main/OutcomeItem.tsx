@@ -5,28 +5,47 @@ import { darkTheme } from '../../utils/theme';
 interface props {
     round: Round;
     playerId: string;
-    bet: number;
 }
 
-export const OutcomeItem = ({round, playerId, bet}: props) => {
-    const outcome: Outcome | undefined = round.findOutcome(playerId);
+interface handResult {
+    outcome: Outcome;
+    diff: number;
+}
 
-    if (outcome) {
-        const diff: number = round.diff(outcome, bet);
+export const OutcomeItem = ({round, playerId}: props) => {
+    const handCount = round.handCount(playerId);
 
-        const color: darkTheme = diff >= 0
-            ? diff === 0
-                ? darkTheme.TEXT
-                : darkTheme.GREEN
-            : darkTheme.RED;
+    const results: handResult[] = Array.from({ length: handCount }, (_, i) => {
+        const outcome = round.findOutcome(playerId, i);
+        if (!outcome) return null;
 
-        return (
+        const bet = round.getBet(playerId, i) ?? 0;
+        return { outcome, diff: round.diff(outcome, bet) };
+    }).filter((r): r is handResult => r !== null);
+
+    if (results.length === 0) return null;
+
+    const total = results.reduce((sum, r) => sum + r.diff, 0);
+
+    const colorFor = (diff: number): darkTheme => diff > 0
+        ? darkTheme.GREEN
+        : diff < 0
+            ? darkTheme.RED
+            : darkTheme.TEXT;
+
+    return (
 
 <Box display='flex' flexDirection='column' alignItems='center' gap={1}>
-    <Text>{outcome}</Text>
-    <Text color={color}>{diff > 0 ? '+' : ''}{Math.round(diff)}G</Text>
- </Box>
-
-        )
+    {results.length > 1
+        ? results.map((r, i) => (
+            <Text key={i} color={colorFor(r.diff)}>
+                {r.outcome} {r.diff > 0 ? '+' : ''}{Math.round(r.diff)}G
+            </Text>
+        ))
+        : <Text>{results[0]!.outcome}</Text>
     }
+    <Text bold color={colorFor(total)}>{total > 0 ? '+' : ''}{Math.round(total)}G</Text>
+</Box>
+
+    )
 }

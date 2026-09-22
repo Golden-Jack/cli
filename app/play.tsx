@@ -99,13 +99,21 @@ export const Play = () => {
             if (input.toLowerCase() === 'l') setBet(player.balance >= 50 ? 50 : player.balance); // min
         }
 
-        if (lastRound.state === GameState.PLAYER) { // Hit or Stand
+        if (lastRound.state === GameState.PLAYER) { // Player action
             if (input.toLowerCase() === 'h') {
                 lastRound.hit(player.id);
                 forceUpdate();
             }
             if (input.toLowerCase() === 's') {
                 lastRound.stand(player.id);
+                forceUpdate();
+            }
+            if (input.toLowerCase() === 'p') {
+                lastRound.split(player.id);
+                forceUpdate();
+            }
+            if (input.toLowerCase() === 'd') {
+                lastRound.double(player.id);
                 forceUpdate();
             }
         }
@@ -131,9 +139,9 @@ export const Play = () => {
     <Box display='flex' flexDirection='column' height={height} alignItems='center' justifyContent='center'>
         {!betConfirmed && <Text>SELECT YOUR BET ABOVE</Text>}
         {betConfirmed && (
-            <Box display='flex' flexDirection='row' alignItems='center' justifyContent='space-around' width='100%'>
+            <Box display='flex' flexDirection='column' alignItems='center' justifyContent='space-evenly' width='100%' height='100%'>
                 <HandItem lastRound={lastRound} isDealer />
-                <OutcomeItem round={lastRound} playerId={player.id} bet={bet} />
+                <OutcomeItem round={lastRound} playerId={player.id} />
                 <HandItem lastRound={lastRound} player={player} />
             </Box>
         )}
@@ -141,7 +149,7 @@ export const Play = () => {
 
     <Sep />
 
-    <Footer lastRound={lastRound} isBetConfirmed={betConfirmed} />
+    <Footer lastRound={lastRound} isBetConfirmed={betConfirmed} player={player} gameConfig={gameConfig} />
 </Box>
 
     )
