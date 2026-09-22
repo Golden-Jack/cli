@@ -31,7 +31,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@golden-jack/engine": "^1.0.6",
+    "@golden-jack/engine": "^1.1.1",
     "env-paths": "^4.0.0",
     "ink": "^7.1.1",
     "react": "^19.3.0"

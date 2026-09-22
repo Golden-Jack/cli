@@ -1,15 +1,17 @@
 import React from 'react';
 import { Box, useInput } from 'ink';
-import { GameState, Round } from '@golden-jack/engine';
+import { GameConfig, GameState, Hand, Player, Round } from '@golden-jack/engine';
 import { darkTheme } from '../../utils/theme';
 import { Key } from './Key';
 
 interface props {
     lastRound: Round;
     isBetConfirmed: boolean;
+    player?: Player;
+    gameConfig?: GameConfig;
 }
 
-export const Footer = ({lastRound, isBetConfirmed}: props) => {
+export const Footer = ({lastRound, isBetConfirmed, player, gameConfig}: props) => {
     const [keyDisplayed, setKeyDisplayed] = React.useState(false);
 
     useInput((input, key) => {
@@ -17,6 +19,30 @@ export const Footer = ({lastRound, isBetConfirmed}: props) => {
             setKeyDisplayed(!keyDisplayed);
         }
     }, { isActive: true });
+
+    let canSplit = false;
+    let canDouble = false;
+
+    if (lastRound.state === GameState.PLAYER && player && gameConfig) {
+        const activeIndex = lastRound.getCurrentHandIndex(player.id);
+
+        if (activeIndex >= 0) {
+            const hand: Hand = lastRound.findHand(player.id, activeIndex)!;
+            const bet: number = lastRound.getBet(player.id, activeIndex) ?? 0;
+            const fromSplit: boolean = lastRound.isFromSplit(player.id, activeIndex);
+            const [first, second] = [...hand];
+
+            canSplit = hand.size === 2
+                && !!first && !!second && first.rank === second.rank
+                && player.balance >= bet
+                && lastRound.handCount(player.id) < gameConfig.maxSplitHands;
+
+            canDouble = hand.size === 2
+                && player.balance >= bet
+                && (!fromSplit || gameConfig.allowDoubleAfterSplit)
+                && (gameConfig.doubleOnly.length === 0 || gameConfig.doubleOnly.includes(hand.score));
+        }
+    }
 
     return (
 
@@ -31,6 +57,8 @@ export const Footer = ({lastRound, isBetConfirmed}: props) => {
     {!isBetConfirmed && keyDisplayed && <Key keyCap='l' color={darkTheme.TEXT} does='Minimum' />}
     {lastRound.state === GameState.PLAYER && keyDisplayed && <Key keyCap='h' color={darkTheme.GREEN} does='Hit' />}
     {lastRound.state === GameState.PLAYER && keyDisplayed && <Key keyCap='s' color={darkTheme.RED} does='Stand' />}
+    {lastRound.state === GameState.PLAYER && keyDisplayed && canSplit && <Key keyCap='p' color={darkTheme.RED} does='Split' />}
+    {lastRound.state === GameState.PLAYER && keyDisplayed && canDouble && <Key keyCap='d' color={darkTheme.GREEN} does='Double' />}
     {lastRound.state === GameState.END && keyDisplayed && <Key keyCap='space' color={darkTheme.BLUE} does='New Round' />}
 </Box>
 
