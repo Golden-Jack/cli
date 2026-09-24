@@ -86,7 +86,7 @@ export const Play = () => {
         if (!betConfirmed) { // Bet
             if (key.rightArrow && canIncrease(bet, player.balance, economyConfig.maxBet)) setBet(prev => prev + economyConfig.minBet);
             if (key.leftArrow && canDecrease(bet, economyConfig.minBet)) setBet(prev => prev - economyConfig.minBet);
-            if (key.return && bet >= Math.min(economyConfig.minBet, player.balance) && bet > 0) {
+            if (key.return && player.balance >= economyConfig.minBet && player.balance >= bet && bet > 0) {
                 lastRound.bet(player.id, bet);
                 setBetConfirmed(true);
             }
