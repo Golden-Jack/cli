@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, render, Text, useInput } from 'ink';
+import packageInfos from '../package.json';
 
 import { Sep } from './components/Separator';
 import { Key } from './components/footer/Key';
@@ -126,6 +127,8 @@ export const Settings = () => {
             </Box>
             <Text bold color={theme.TEXT}>{options[option] === 'favorite_bet' ? '  >' : ''}</Text>
         </Box>
+
+        <Box><Text>©Golden Jack V{ packageInfos.version }</Text></Box>
     </Box>
 
     <Sep />
