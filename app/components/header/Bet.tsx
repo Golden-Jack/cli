@@ -10,7 +10,6 @@ interface props {
 }
 
 export const Bet = ({amount, isConfirmed, min, max, playerBalance}: props) => {
-
     return (
 
 <Box display='flex' flexDirection='row'>
