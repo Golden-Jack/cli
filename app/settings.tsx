@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, render, Text, useInput } from 'ink';
+import packageInfos from '../package.json';
 
 import { Sep } from './components/Separator';
 import { Key } from './components/footer/Key';
@@ -126,11 +127,14 @@ export const Settings = () => {
             </Box>
             <Text bold color={theme.TEXT}>{options[option] === 'favorite_bet' ? '  >' : ''}</Text>
         </Box>
+
+        <Box><Text>©Golden Jack V{ packageInfos.version }</Text></Box>
     </Box>
 
     <Sep />
 
     <Box display='flex' flexDirection='row' justifyContent='space-around' flexWrap='wrap' gap={2}>
+        <Key keyCap='escape' color={theme.GOLD} does='Home' />
         <Key keyCap='↕' color={theme.TEXT} does='Navigate' />
         <Key keyCap='return' color={theme.GREEN} does='Select' />
     </Box>

@@ -112,6 +112,7 @@ export const Saves = () => {
     <Sep />
 
     <Box display='flex' flexDirection='row' justifyContent='space-around' flexWrap='wrap' gap={2}>
+        <Key keyCap='escape' color={theme.GOLD} does='Home' />
         <Key keyCap='↕' color={theme.TEXT} does='Navigate' />
         <Key keyCap='return' color={theme.GREEN} does='Select' />
         <Key keyCap='delete' color={theme.RED} does='Delete' />
