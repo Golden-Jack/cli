@@ -21,6 +21,8 @@ import { canDecrease } from './composables/canDecrease';
 import { canIncrease } from './composables/canIncrease';
 import { OutcomeItem } from './components/main/OutcomeItem';
 import { Context } from '../src/context';
+import { PLATFORM, updatePresence } from '@golden-jack/discord-rpc/src/presence';
+import { version } from '../package.json';
 
 const economyConfig: EconomyConfig = DEFAULT_ECONOMY_CONFIG;
     economyConfig.minBet = 50;
@@ -74,6 +76,22 @@ export const Play = () => {
             lastPlayedAt: Date.now()
         })
     }
+
+    const phase = (state: GameState): string | null => {
+        switch (state) {
+            case GameState.BET: return 'BETTING';
+            case GameState.PLAYER: return 'DRAWING';
+            case GameState.END: return 'END OF ROUND';
+            default: return null;
+        }
+    }
+    updatePresence({
+        phase: phase(lastRound.state) ?? 'Idling',
+        balance: player.balance,
+        round: game.rounds.length,
+        platform: PLATFORM.CLI,
+        version: version
+    })
 
     useInput((input, key) => {
         if (key.escape && (lastRound.state === GameState.END || lastRound.state === GameState.BET)) {

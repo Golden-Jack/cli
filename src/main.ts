@@ -27,6 +27,12 @@ const saves: GameData[] = loadSaves(paths.data);
 console.log('Initializing datas...');
 Context.init(settings, profile, saves);
 
+import { initPresence } from '@golden-jack/discord-rpc';
+import { applicationId } from '../config.json';
+(async () => {
+    await initPresence(applicationId);
+})();
+
 console.info('Launching app...');
 const { launchApp } = await import('../app/app');
 
