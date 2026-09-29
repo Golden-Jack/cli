@@ -21,6 +21,9 @@ export function unmountApp() {
     instance?.unmount();
 }
 
+import { version } from '../package.json';
+import { PLATFORM, updatePresence } from '@golden-jack/discord-rpc/src/presence';
+
 export const App = () => {
     const [option, setOption] = React.useState(0);
     const ctx = Context.get();
@@ -29,6 +32,11 @@ export const App = () => {
     const [height, setHeight] = React.useState(process.stdout.rows - 12);
     process.stdout.on('resize', () => {
         setHeight(process.stdout.rows - 12);
+    })
+
+    updatePresence({
+        platform: PLATFORM.CLI,
+        version: version
     })
 
     useInput((input, key) => {

@@ -1,6 +1,6 @@
 {
   "name": "@golden-jack/cli",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "Golden Jack CLI",
   "homepage": "https://github.com/Golden-Jack/cli#readme",
   "bugs": {
@@ -31,6 +31,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "@golden-jack/discord-rpc": "^1.0.0",
     "@golden-jack/engine": "^1.1.1",
     "env-paths": "^4.0.0",
     "ink": "^7.1.1",
