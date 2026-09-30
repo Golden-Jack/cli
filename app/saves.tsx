@@ -95,6 +95,7 @@ export const Saves = () => {
 <Box paddingX={2} paddingY={1} flexDirection='column' gap={1}>
     <Box display='flex' flexDirection='row' justifyContent='space-between' width='100%'>
         <Text bold color={theme.GOLD}>Golden Jack</Text>
+        <Text bold color={theme.TEXT}>Saves</Text>
     </Box>
 
     <Sep />

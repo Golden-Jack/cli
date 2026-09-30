@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, render, Text, useInput } from 'ink';
+
 import packageInfos from '../package.json';
 
 import { Sep } from './components/Separator';
@@ -11,8 +12,9 @@ import { palettes } from './utils/theme';
 import { Context } from '../src/context';
 import { unmountPlay } from './play';
 import { launchApp } from './app';
+import { versionBehind } from './utils/update';
 
-const options: string[] = ['username', 'favorite_bet', ];
+const options: string[] = ['username', 'favorite_bet', 'check_update' ];
 
 let instance: ReturnType<typeof render>;
 export function showSettings() {
@@ -30,6 +32,8 @@ export const Settings = () => {
     const [isTyping, setIsTyping] = React.useState(false);
     const [username, setUsername] = React.useState(ctx.profile.username);
     const [favoriteBet, setFavoriteBet] = React.useState(ctx.settings.favoriteBet);
+    const [updateText, setUpdateText] = React.useState('');
+    const [update, setUpdate] = React.useState(false);
 
     const [height, setHeight] = React.useState(process.stdout.rows - 12);
     React.useEffect(() => {
@@ -38,7 +42,7 @@ export const Settings = () => {
         return () => { process.stdout.off('resize', onResize); };
     }, []);
 
-    useInput((input, key) => {
+    useInput(async (input, key) => {
         if (key.escape) {
             if (isTyping) {
                 setIsTyping(false);
@@ -53,6 +57,21 @@ export const Settings = () => {
         if (key.upArrow && !isTyping) setOption(prev(option, options));
 
         if (key.return) {
+            if (options[option] === 'check_update') {
+                setUpdateText('Loading...');
+
+                const newer = await versionBehind();
+                if (newer.length > 0) {
+                    setUpdate(true);
+                    setUpdateText(`${newer.length} versions behind (${newer})`);
+                } else {
+                    setUpdate(false);
+                    setUpdateText('Up to date');
+                }
+
+                return;
+            }
+
             setIsTyping(!isTyping);
         }
 
@@ -116,6 +135,7 @@ export const Settings = () => {
             </Box>
             <Text bold color={theme.TEXT}>{options[option] === 'username' ? '  >' : ''}</Text>
         </Box>
+
         <Box display='flex' gap={1}>
             <Text bold color={theme.TEXT}>{options[option] === 'favorite_bet' ? '<  ' : ''}</Text>
             <Box display='flex' gap={1}>
@@ -128,6 +148,15 @@ export const Settings = () => {
                 <Text color={theme.TEXT}>{favoriteBet}G</Text>
             </Box>
             <Text bold color={theme.TEXT}>{options[option] === 'favorite_bet' ? '  >' : ''}</Text>
+        </Box>
+
+        <Box display='flex' gap={1}>
+            <Text bold color={theme.TEXT}>{options[option] === 'check_update' ? '<  ' : ''}</Text>
+            <Box display='flex' gap={updateText.length > 0 ? 1 : 0}>
+                <Text bold color={options[option] === 'check_update' ? theme.GOLD : theme.TEXT}>Check for updates</Text>
+                <Text color={updateText === 'Loading...' ? theme.BLUE : update ? theme.RED : theme.GREEN}>{updateText}</Text>
+            </Box>
+            <Text bold color={theme.TEXT}>{options[option] === 'check_update' ? '  >' : ''}</Text>
         </Box>
 
         <Box><Text>©Golden Jack V{ packageInfos.version }</Text></Box>
