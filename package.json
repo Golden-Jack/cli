@@ -1,6 +1,6 @@
 {
   "name": "@golden-jack/cli",
-  "version": "1.3.2-dev",
+  "version": "1.3.2",
   "description": "Golden Jack CLI",
   "homepage": "https://github.com/Golden-Jack/cli#readme",
   "bugs": {
