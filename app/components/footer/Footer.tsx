@@ -33,7 +33,9 @@ export const Footer = ({lastRound, isBetConfirmed, player, gameConfig}: props) =
             const [first, second] = [...hand];
 
             canSplit = hand.size === 2
-                && !!first && !!second && first.rank === second.rank
+                && !!first && !!second
+                    && ((gameConfig.allowSplitOnDifferentSymbol && first.value === second.value)
+                    || (!gameConfig.allowSplitOnDifferentSymbol && first.rank === second.rank))
                 && player.balance >= bet
                 && lastRound.handCount(player.id) < gameConfig.maxSplitHands;
 
