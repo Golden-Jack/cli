@@ -32,9 +32,11 @@ export const Settings = () => {
     const [favoriteBet, setFavoriteBet] = React.useState(ctx.settings.favoriteBet);
 
     const [height, setHeight] = React.useState(process.stdout.rows - 12);
-    process.stdout.on('resize', () => {
-        setHeight(process.stdout.rows - 12);
-    })
+    React.useEffect(() => {
+        const onResize = () => setHeight(process.stdout.rows - 12);
+        process.stdout.on('resize', onResize);
+        return () => { process.stdout.off('resize', onResize); };
+    }, []);
 
     useInput((input, key) => {
         if (key.escape) {
