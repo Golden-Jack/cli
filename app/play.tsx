@@ -110,7 +110,11 @@ export const Play = () => {
             }
             if (input.toLowerCase() === 'a') setBet(player.balance); // all-in
             if (input.toLowerCase() === 'h') setBet(player.balance / 2); // half-in
-            if (input.toLowerCase() === 'f') setBet(player.balance >= ctx.settings.favoriteBet
+            if (input.toLowerCase() === 'd') setBet(player.balance >= bet * 2 // double
+                ? bet * 2
+                : player.balance
+            );
+            if (input.toLowerCase() === 'f') setBet(player.balance >= ctx.settings.favoriteBet // favorite
                 ? ctx.settings.favoriteBet
                 : player.balance
             );

@@ -52,11 +52,12 @@ export const Footer = ({lastRound, isBetConfirmed, player, gameConfig}: props) =
     {!keyDisplayed && <Key keyCap='m' color={darkTheme.TEXT} does='Shortcuts' />}
     {keyDisplayed && (lastRound.state === GameState.END || lastRound.state === GameState.BET) && <Key keyCap='escape' color={darkTheme.GOLD} does='Home' />}
     {!isBetConfirmed && keyDisplayed && <Key keyCap='↔' color={darkTheme.TEXT} does='Change Bet' />}
-    {!isBetConfirmed && keyDisplayed && <Key keyCap='return' color={darkTheme.GREEN} does='Valid' />}
     {!isBetConfirmed && keyDisplayed && <Key keyCap='a' color={darkTheme.GOLD} does='All-in' />}
     {!isBetConfirmed && keyDisplayed && <Key keyCap='h' color={darkTheme.BLUE} does='Half-in' />}
+    {!isBetConfirmed && keyDisplayed && <Key keyCap='d' color={darkTheme.TEXT} does='Double' />}
     {!isBetConfirmed && keyDisplayed && <Key keyCap='f' color={darkTheme.GREEN} does='Favorite' />}
     {!isBetConfirmed && keyDisplayed && <Key keyCap='l' color={darkTheme.TEXT} does='Minimum' />}
+    {!isBetConfirmed && keyDisplayed && <Key keyCap='return' color={darkTheme.GREEN} does='Valid' />}
     {lastRound.state === GameState.PLAYER && keyDisplayed && <Key keyCap='h' color={darkTheme.GREEN} does='Hit' />}
     {lastRound.state === GameState.PLAYER && keyDisplayed && <Key keyCap='s' color={darkTheme.RED} does='Stand' />}
     {lastRound.state === GameState.PLAYER && keyDisplayed && canSplit && <Key keyCap='p' color={darkTheme.RED} does='Split' />}
