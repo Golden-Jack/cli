@@ -1,6 +1,6 @@
 {
   "name": "@golden-jack/cli",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Golden Jack CLI",
   "homepage": "https://github.com/Golden-Jack/cli#readme",
   "bugs": {
@@ -27,7 +27,7 @@
   },
   "scripts": {
     "start": "tsx .",
-    "build": "esbuild src/main.ts --bundle --platform=node --format=esm --outfile=dist/main.js --external:ink --external:react",
+    "build": "esbuild src/main.ts --bundle --platform=node --format=esm --outfile=dist/main.js --external:ink --external:react --banner:js=\"import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);\"",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
