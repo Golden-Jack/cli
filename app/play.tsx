@@ -45,7 +45,7 @@ export const Play = () => {
 
     if (!activeSave) {
         launchApp();
-        return null;
+        return;
     }
 
     const [player] = React.useState(() => new Player(randomUUID(), ctx.profile.username, ctx.activeSave!.balance));
@@ -133,10 +133,12 @@ export const Play = () => {
                 forceUpdate();
             }
             if (input.toLowerCase() === 'p') {
+                if (player.balance < bet) return;
                 lastRound.split(player.id);
                 forceUpdate();
             }
             if (input.toLowerCase() === 'd') {
+                if (player.balance < bet) return;
                 lastRound.double(player.id);
                 forceUpdate();
             }
